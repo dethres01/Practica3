@@ -1,0 +1,20 @@
+// original grammar
+
+expr -> expr + term | expr - term | term
+term -> term * factor | term / factor | factor
+factor -> ( expr ) | number
+
+// we can rewrite the grammar to not have the left recursion
+
+A -> A + B | A - B | B
+B -> B * C | B / C | C
+C -> ( A ) | number
+
+// we can rewrite the grammar so it starts like this
+
+expr -> <term> <rest_of_expr>
+rest_of_expr -> + <term> <rest_of_expr> | - <term> <rest_of_expr> | epsilon
+term -> <factor> <rest_of_term>
+rest_of_term -> * <factor> <rest_of_term> | / <factor> <rest_of_term> | epsilon
+factor -> ( <expr> ) | <number>
+<number> -> 1 | 2 | 3 | ...
