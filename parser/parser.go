@@ -17,7 +17,7 @@ func NewParser() *Parser {
 		Counter: 0,
 	}
 }
-func (p *Parser) Parse() error {
+func (p *Parser) Parse() (*AST, error) {
 	// start parsing
 	// initial grammar:
 	// expr -> <term> <rest_of_expr>
@@ -25,9 +25,16 @@ func (p *Parser) Parse() error {
 	// first token
 	p.Lookahead_token = p.Expression[p.Counter].Type
 	p.Lookahead_value = p.Expression[p.Counter].Info
-	err := p.expr()
+
+	// initialize AST
+	ast := &AST{}
+	e_node, err := p.expr()
 	if err != nil {
-		return err
+		return ast, err
 	}
-	return nil
+	ast.Children = append(ast.Children, e_node)
+
+	return ast, nil
 }
+
+//Since we cannot use a stack we have to transform the entire code to have a proper AST

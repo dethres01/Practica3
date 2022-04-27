@@ -10,8 +10,8 @@ factor -> ( <expr> ) | <number>
 <number> -> 1 | 2 | 3 | ...
 */
 import (
-	"Practica3/calculator"
 	"Practica3/parser"
+	"Practica3/semantics"
 	"fmt"
 )
 
@@ -20,17 +20,15 @@ import (
 func main() {
 	p := parser.NewParser()
 	p.Expression = parser.ExpressionCatcher()
-	err := p.Parse()
+	ast, err := p.Parse()
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(p.Expression)
 	fmt.Println(p.Tokens)
 
-	// resolve the expression
-	res, err := calculator.Resolve(p.Tokens)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(res)
+	s := semantics.NewSemanticAnalyzer(ast)
+
+	s.Analyze()
+
 }

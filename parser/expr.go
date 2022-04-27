@@ -1,22 +1,27 @@
 package parser
 
-import "fmt"
-
-func (p *Parser) expr() error {
-	fmt.Println("Entering Expr")
+func (p *Parser) expr() (*ASTNode, error) {
 
 	// expr grammar:
 	// expr -> <term> <rest_of_expr>
 	// first token
-	err := p.term()
-	fmt.Println("Exited Term")
+	// New AST
+	// New Node
+	node := &ASTNode{}
+	node.TokenType = "expr"
+	t_node, err := p.term()
 	if err != nil {
-		return err
+		return node, err
 	}
-	err = p.rest_of_expr()
-	fmt.Println("Exited Rest of Expr")
+	// add term to AST
+	node.Children = append(node.Children, t_node)
+	r_node, err := p.rest_of_expr()
 	if err != nil {
-		return err
+		return node, err
 	}
-	return nil
+	// add rest_of_expr to AST
+	node.Children = append(node.Children, r_node)
+
+	// append info to AST
+	return node, nil
 }
